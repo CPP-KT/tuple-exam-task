@@ -1,5 +1,5 @@
-#include "gtest/gtest.h"
 #include "tuple.h"
+#include "gtest/gtest.h"
 
 struct moveable_helper {
   moveable_helper() = default;
@@ -19,6 +19,7 @@ struct only_moveable {
   int operator()() const {
     return foo;
   }
+
 private:
   int foo = 0;
 };
@@ -30,6 +31,7 @@ struct cross1 {
   int operator()() const {
     return foo;
   }
+
 private:
   int foo = 0;
 };
@@ -46,6 +48,7 @@ struct copy_helper {
   int operator()() const {
     return foo;
   }
+
 private:
   int foo = 0;
 };
@@ -62,7 +65,8 @@ TEST(tuple_constructors, const_refered_constructor) {
   std::vector<double> const b(10, 13);
   long long const c = 42;
   copy_helper const d;
-  tuple<std::vector<int>, std::vector<double>, long long, copy_helper> x(a, b, c, d);
+  tuple<std::vector<int>, std::vector<double>, long long, copy_helper> x(a, b,
+                                                                         c, d);
   EXPECT_EQ(3, get<0>(x).size());
   EXPECT_EQ(0, d());
   EXPECT_EQ(1, get<copy_helper>(x)());
@@ -151,7 +155,8 @@ TEST(tuple, make_tuple_and_tuple_element) {
 
   static_assert(std::is_same_v<tuple_element<0, decltype(x)>::type, int>);
   static_assert(std::is_same_v<tuple_element<1, decltype(x)>::type, double>);
-  static_assert(std::is_same_v<tuple_element<2, decltype(x)>::type, moveable_helper>);
+  static_assert(
+      std::is_same_v<tuple_element<2, decltype(x)>::type, moveable_helper>);
 
   EXPECT_EQ(1, get<2>(x)());
 }
@@ -182,11 +187,14 @@ struct non_default_constructible_t {
 };
 
 static_assert(std::is_default_constructible_v<tuple<int, double>>);
-static_assert(!std::is_default_constructible_v<tuple<int, non_default_constructible_t>>);
+static_assert(
+    !std::is_default_constructible_v<tuple<int, non_default_constructible_t>>);
 
 // Some implicit conversion tests
-static_assert(std::is_convertible_v<tuple<int, int>, tuple<long long, long long>>);
-static_assert(std::is_convertible_v<tuple<long long, long long>, tuple<int, int>>);
+static_assert(
+    std::is_convertible_v<tuple<int, int>, tuple<long long, long long>>);
+static_assert(
+    std::is_convertible_v<tuple<long long, long long>, tuple<int, int>>);
 
 struct copy_constructible_t {
   copy_constructible_t() {}
