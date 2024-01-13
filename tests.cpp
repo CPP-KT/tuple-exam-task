@@ -1,8 +1,9 @@
-#include "tuple.h"
 #include "gtest/gtest.h"
+#include "tuple.h"
 
 struct moveable_helper {
   moveable_helper() = default;
+
   moveable_helper(moveable_helper&&) : foo(1) {}
 
   int operator()() const {
@@ -25,6 +26,7 @@ private:
 };
 
 struct cross2;
+
 struct cross1 {
   explicit cross1(int x) : foo(x) {}
 
@@ -35,6 +37,7 @@ struct cross1 {
 private:
   int foo = 0;
 };
+
 struct cross2 {
   explicit operator cross1() {
     return cross1(32);
@@ -43,7 +46,8 @@ struct cross2 {
 
 struct copy_helper {
   copy_helper() = default;
-  copy_helper(copy_helper const&) : foo(1) {}
+
+  copy_helper(const copy_helper&) : foo(1) {}
 
   int operator()() const {
     return foo;
@@ -61,12 +65,11 @@ TEST(tuple_constructors, empty) {
 }
 
 TEST(tuple_constructors, const_refered_constructor) {
-  std::vector<int> const a(3, 11);
-  std::vector<double> const b(10, 13);
-  long long const c = 42;
-  copy_helper const d;
-  tuple<std::vector<int>, std::vector<double>, long long, copy_helper> x(a, b,
-                                                                         c, d);
+  const std::vector<int> a(3, 11);
+  const std::vector<double> b(10, 13);
+  const long long c = 42;
+  const copy_helper d;
+  tuple<std::vector<int>, std::vector<double>, long long, copy_helper> x(a, b, c, d);
   EXPECT_EQ(3, get<0>(x).size());
   EXPECT_EQ(0, d());
   EXPECT_EQ(1, get<copy_helper>(x)());
@@ -132,7 +135,7 @@ TEST(tuple, gets) {
   EXPECT_FLOAT_EQ(0.f, get<float>(x));
 
   get<float>(x) = 4.2f;
-  auto const& y = x;
+  const auto& y = x;
 
   EXPECT_FLOAT_EQ(4.2f, get<2>(y));
 
@@ -155,8 +158,7 @@ TEST(tuple, make_tuple_and_tuple_element) {
 
   static_assert(std::is_same_v<tuple_element<0, decltype(x)>::type, int>);
   static_assert(std::is_same_v<tuple_element<1, decltype(x)>::type, double>);
-  static_assert(
-      std::is_same_v<tuple_element<2, decltype(x)>::type, moveable_helper>);
+  static_assert(std::is_same_v<tuple_element<2, decltype(x)>::type, moveable_helper>);
 
   EXPECT_EQ(1, get<2>(x)());
 }
@@ -187,18 +189,16 @@ struct non_default_constructible_t {
 };
 
 static_assert(std::is_default_constructible_v<tuple<int, double>>);
-static_assert(
-    !std::is_default_constructible_v<tuple<int, non_default_constructible_t>>);
+static_assert(!std::is_default_constructible_v<tuple<int, non_default_constructible_t>>);
 
 // Some implicit conversion tests
-static_assert(
-    std::is_convertible_v<tuple<int, int>, tuple<long long, long long>>);
-static_assert(
-    std::is_convertible_v<tuple<long long, long long>, tuple<int, int>>);
+static_assert(std::is_convertible_v<tuple<int, int>, tuple<long long, long long>>);
+static_assert(std::is_convertible_v<tuple<long long, long long>, tuple<int, int>>);
 
 struct copy_constructible_t {
   copy_constructible_t() {}
-  copy_constructible_t(copy_constructible_t const&) {}
+
+  copy_constructible_t(const copy_constructible_t&) {}
 };
 
 struct move_constructible_t {
@@ -206,8 +206,8 @@ struct move_constructible_t {
   move_constructible_t& operator=(move_constructible_t&&) = default;
 
 private:
-  move_constructible_t(move_constructible_t const&) = delete;
-  move_constructible_t& operator=(move_constructible_t const&) = delete;
+  move_constructible_t(const move_constructible_t&) = delete;
+  move_constructible_t& operator=(const move_constructible_t&) = delete;
 };
 
 static_assert(std::is_copy_constructible_v<tuple<int, int>>);
