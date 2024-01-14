@@ -62,6 +62,14 @@ static_assert([] {
     static_assert(!std::is_copy_constructible_v<tuple<util::non_copyable>>);
     static_assert(std::is_move_constructible_v<tuple<util::non_copyable>>);
     static_assert(std::is_move_assignable_v<tuple<util::non_copyable>>);
+
+    static_assert(!std::is_constructible_v<tuple<int, double>, tuple<int>>);
+    static_assert(!std::is_constructible_v<tuple<int, double>, tuple<double>>);
+    static_assert(!std::is_constructible_v<tuple<int, double>, tuple<int, double, int>>);
+    static_assert(!std::is_constructible_v<tuple<int, double>, tuple<int, int, double>>);
+
+    static_assert(!std::is_constructible_v<tuple<int>, std::string>);
+    static_assert(!std::is_constructible_v<tuple<int>, tuple<std::string>>);
   }
 
   // triviality
