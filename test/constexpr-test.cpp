@@ -79,6 +79,24 @@ static_assert([] {
     static_assert(std::is_trivially_copy_assignable_v<tuple<int, double>>);
     static_assert(std::is_trivially_move_constructible_v<tuple<int, double>>);
     static_assert(std::is_trivially_move_assignable_v<tuple<int, double>>);
+
+    struct not_trivial {
+      not_trivial(const not_trivial&) {}
+      not_trivial(not_trivial&&) {}
+      not_trivial& operator=(const not_trivial&) {
+        return *this;
+      }
+      not_trivial& operator=(not_trivial&&) {
+        return *this;
+      }
+      ~not_trivial() {}
+    };
+
+    static_assert(!std::is_trivially_destructible_v<tuple<int, double, not_trivial>>);
+    static_assert(!std::is_trivially_copy_constructible_v<tuple<int, double, not_trivial>>);
+    static_assert(!std::is_trivially_copy_assignable_v<tuple<int, double, not_trivial>>);
+    static_assert(!std::is_trivially_move_constructible_v<tuple<int, double, not_trivial>>);
+    static_assert(!std::is_trivially_move_assignable_v<tuple<int, double, not_trivial>>);
   }
 
   // direct ctor
