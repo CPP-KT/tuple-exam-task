@@ -205,6 +205,16 @@ TEST(tuple, converting_assignment) {
   EXPECT_FLOAT_EQ(get<2>(x), get<2>(z));
 }
 
+TEST(tuple, converting_move_assignment) {
+  tuple<int, double, float, std::string> x(1, 2., 3.14, "pizza");
+  tuple<int, float, double, std::string> z;
+  z = std::move(x);
+  EXPECT_EQ(1, get<0>(z));
+  EXPECT_EQ(2., get<1>(z));
+  EXPECT_FLOAT_EQ(3.14, get<2>(z));
+  EXPECT_FLOAT_EQ("pizza", get<3>(z));
+}
+
 TEST(tuple, swap) {
   tuple<int, double, int> t1(42, 3.14, 1337);
   tuple<int, double, int> t2(69, 1.618, 1488);
@@ -314,4 +324,28 @@ TEST(tuple_compare, different_types) {
   EXPECT_NE(tuple(1, 2U), tuple(1, 3U));
   EXPECT_LT(tuple(1, 2U), tuple(1, 3U));
   EXPECT_GT(tuple(1, 3U), tuple(1, 2U));
+}
+
+TEST(traits, trivialy) {
+  bool td1 = std::is_trivially_destructible_v<tuple<int, double>>;
+  bool td2 = std::is_trivially_destructible_v<tuple<int, std::string>>;
+  bool tcc1 = std::is_trivially_copy_constructible_v<tuple<int, double>>;
+  bool tcc2 = std::is_trivially_copy_constructible_v<tuple<int, std::string>>;
+  bool tca1 = std::is_trivially_copy_assignable_v<tuple<int, double>>;
+  bool tca2 = std::is_trivially_copy_assignable_v<tuple<int, std::string>>;
+  bool tmc1 = std::is_trivially_move_constructible_v<tuple<int, double>>;
+  bool tmc2 = std::is_trivially_move_constructible_v<tuple<int, std::string>>;
+  bool tma1 = std::is_trivially_move_assignable_v<tuple<int, double>>;
+  bool tma2 = std::is_trivially_move_assignable_v<tuple<int, std::string>>;
+
+  EXPECT_TRUE(td1);
+  EXPECT_FALSE(td2);
+  EXPECT_TRUE(tcc1);
+  EXPECT_FALSE(tcc2);
+  EXPECT_TRUE(tca1);
+  EXPECT_FALSE(tca2);
+  EXPECT_TRUE(tmc1);
+  EXPECT_FALSE(tmc2);
+  EXPECT_TRUE(tma1);
+  EXPECT_FALSE(tma2);
 }
