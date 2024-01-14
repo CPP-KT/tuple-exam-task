@@ -70,6 +70,9 @@ static_assert([] {
 
     static_assert(!std::is_constructible_v<tuple<int>, std::string>);
     static_assert(!std::is_constructible_v<tuple<int>, tuple<std::string>>);
+
+    static_assert(!std::is_constructible_v<tuple<int, double, char, long long>, tuple<int, double, char, std::string>>);
+    static_assert(!std::is_constructible_v<tuple<int, long long, double>, tuple<int, std::string, double>>);
   }
 
   // triviality
@@ -104,23 +107,25 @@ static_assert([] {
   {
     using T = tuple<int, double, float, int>;
     static_assert(requires(T t) {
-      { get<1>(t) } -> std::same_as<double&>;
-      { get<1>(std::as_const(t)) } -> std::same_as<const double&>;
-      { get<1>(std::move(t)) } -> std::same_as<double&&>;
-      { get<1>(std::move(std::as_const(t))) } -> std::same_as<const double&&>;
-    });
+                    { get<1>(t) } -> std::same_as<double&>;
+                    { get<1>(std::as_const(t)) } -> std::same_as<const double&>;
+                    { get<1>(std::move(t)) } -> std::same_as<double&&>;
+                    { get<1>(std::move(std::as_const(t))) } -> std::same_as<const double&&>;
+                  });
     static_assert(requires(T t) {
-      { get<double>(t) } -> std::same_as<double&>;
-      { get<double>(std::as_const(t)) } -> std::same_as<const double&>;
-      { get<double>(std::move(t)) } -> std::same_as<double&&>;
-      { get<double>(std::move(std::as_const(t))) } -> std::same_as<const double&&>;
-    });
+                    { get<double>(t) } -> std::same_as<double&>;
+                    { get<double>(std::as_const(t)) } -> std::same_as<const double&>;
+                    { get<double>(std::move(t)) } -> std::same_as<double&&>;
+                    { get<double>(std::move(std::as_const(t))) } -> std::same_as<const double&&>;
+                  });
   }
 
   // comparison
   {
     static_assert(tuple(1, 2, 3) == tuple(1, 2, 3));
     static_assert(tuple(1, 2, 3) < tuple(10, 2, 3));
+    static_assert(tuple(1, "2", "3") < tuple(10, "2", "3"));
+    static_assert(tuple(1, 2, 3, "4", 5) < tuple(1, 2, 30, "4", 5));
   }
 
   // swap
