@@ -183,7 +183,8 @@ TEST(tuple, converting_ctor_2) {
 
 TEST(tuple, converting_ctor_move) {
   struct constructible_from_rvalue {
-    explicit constructible_from_rvalue(util::move_counter&&) : value(42) {}
+    explicit constructible_from_rvalue(util::move_counter&&)
+        : value(42) {}
 
     int value = 0;
   };

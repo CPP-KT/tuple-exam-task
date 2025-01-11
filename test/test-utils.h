@@ -7,7 +7,8 @@ namespace tests::util {
 struct move_counter {
   move_counter() = default;
 
-  move_counter(move_counter&& other) noexcept : moves(other.moves + 1) {}
+  move_counter(move_counter&& other) noexcept
+      : moves(other.moves + 1) {}
 
   move_counter& operator=(move_counter&&) = default;
 
@@ -22,7 +23,8 @@ private:
 struct copy_counter {
   copy_counter() = default;
 
-  copy_counter(const copy_counter& other) : copies(other.copies + 1) {}
+  copy_counter(const copy_counter& other)
+      : copies(other.copies + 1) {}
 
   std::size_t get_copies() const {
     return copies;
@@ -33,7 +35,8 @@ private:
 };
 
 struct non_copyable {
-  explicit non_copyable(int value) : value(value) {}
+  explicit non_copyable(int value)
+      : value(value) {}
 
   non_copyable(non_copyable&&) = default;
   non_copyable& operator=(non_copyable&&) = default;
@@ -66,13 +69,16 @@ struct non_trivial {
 };
 
 struct only_movable {
-  only_movable() : value(0) {}
+  only_movable()
+      : value(0) {}
 
-  only_movable(int x) : value(x) {}
+  only_movable(int x)
+      : value(x) {}
 
   only_movable(const only_movable&) = delete;
 
-  only_movable(only_movable&& other) : value(other.value) {
+  only_movable(only_movable&& other)
+      : value(other.value) {
     other.value = 0;
   }
 

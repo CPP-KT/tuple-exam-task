@@ -112,13 +112,13 @@ static_assert([] {
   // get
   {
     using T = tuple<int, double, float, int>;
-    static_assert(requires(T t) {
+    static_assert(requires (T t) {
       { get<1>(t) } -> std::same_as<double&>;
       { get<1>(std::as_const(t)) } -> std::same_as<const double&>;
       { get<1>(std::move(t)) } -> std::same_as<double&&>;
       { get<1>(std::move(std::as_const(t))) } -> std::same_as<const double&&>;
     });
-    static_assert(requires(T t) {
+    static_assert(requires (T t) {
       { get<double>(t) } -> std::same_as<double&>;
       { get<double>(std::as_const(t)) } -> std::same_as<const double&>;
       { get<double>(std::move(t)) } -> std::same_as<double&&>;
