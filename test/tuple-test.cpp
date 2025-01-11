@@ -205,6 +205,19 @@ TEST(tuple, converting_assignment) {
   EXPECT_FLOAT_EQ(get<2>(x), get<2>(z));
 }
 
+TEST(tuple, converting_move_assignment) {
+  tuple<int, double, float, std::string, tests::util::only_movable> x(1, 1.618, 3.14, "pizza", 7);
+  tuple<uint64_t, float, double, std::string, tests::util::only_movable> z;
+  z = std::move(x);
+
+  EXPECT_EQ(get<0>(z), 1);
+  EXPECT_FLOAT_EQ(get<1>(z), 1.618);
+  EXPECT_FLOAT_EQ(get<2>(z), 3.14);
+  EXPECT_EQ(get<3>(z), "pizza");
+  EXPECT_EQ(get<4>(z).value, 7);
+  EXPECT_EQ(get<4>(x).value, 0);
+}
+
 TEST(tuple, swap) {
   tuple<int, double, int> t1(42, 3.14, 1337);
   tuple<int, double, int> t2(69, 1.618, 1488);

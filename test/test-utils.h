@@ -65,4 +65,26 @@ struct non_trivial {
   ~non_trivial() {}
 };
 
+struct only_movable {
+  only_movable() : value(0) {}
+
+  only_movable(int x) : value(x) {}
+
+  only_movable(const only_movable&) = delete;
+
+  only_movable(only_movable&& other) : value(other.value) {
+    other.value = 0;
+  }
+
+  only_movable& operator=(only_movable& other) = delete;
+
+  only_movable& operator=(only_movable&& other) {
+    value = other.value;
+    other.value = 0;
+    return *this;
+  }
+
+  int value;
+};
+
 } // namespace tests::util
