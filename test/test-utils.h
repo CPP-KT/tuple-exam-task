@@ -49,4 +49,20 @@ private:
   int value;
 };
 
+struct non_trivial {
+  non_trivial(const non_trivial&) {}
+
+  non_trivial(non_trivial&&) {}
+
+  non_trivial& operator=(const non_trivial&) {
+    return *this;
+  }
+
+  non_trivial& operator=(non_trivial&&) {
+    return *this;
+  }
+
+  ~non_trivial() {}
+};
+
 } // namespace tests::util
