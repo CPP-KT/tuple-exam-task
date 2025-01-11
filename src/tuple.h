@@ -67,3 +67,6 @@ constexpr bool operator==(const tuple<TTypes...>& lhs, const tuple<UTypes...>& r
 
 template <typename... TTypes, typename... UTypes>
 constexpr void operator<=>(const tuple<TTypes...>& lhs, const tuple<UTypes...>& rhs);
+
+template <typename... Tuples>
+constexpr tuple<CTypes...> tuple_cat(Tuples&&... args);
