@@ -70,6 +70,9 @@ static_assert([] {
 
     static_assert(!std::is_constructible_v<tuple<int>, std::string>);
     static_assert(!std::is_constructible_v<tuple<int>, tuple<std::string>>);
+
+    static_assert(!std::is_constructible_v<tuple<int, double, char, long long>, tuple<int, double, char, std::string>>);
+    static_assert(!std::is_constructible_v<tuple<int, long long, double>, tuple<int, std::string, double>>);
   }
 
   // triviality
@@ -119,8 +122,13 @@ static_assert([] {
 
   // comparison
   {
+    using namespace std::string_literals;
+
     static_assert(tuple(1, 2, 3) == tuple(1, 2, 3));
     static_assert(tuple(1, 2, 3) < tuple(10, 2, 3));
+
+    static_assert(tuple(1, "2"s, "3"s) < tuple(10, "2"s, "3"s));
+    static_assert(tuple(1, 2, 3, "4"s, 5) < tuple(1, 2, 30, "4"s, 5));
   }
 
   // swap
