@@ -2,6 +2,7 @@
 #include "tuple.h"
 
 #include <string>
+#include <string_view>
 #include <utility>
 
 using namespace tests;
@@ -128,13 +129,13 @@ static_assert([] {
 
   // comparison
   {
-    using namespace std::string_literals;
+    using namespace std::string_view_literals;
 
     static_assert(tuple(1, 2, 3) == tuple(1, 2, 3));
     static_assert(tuple(1, 2, 3) < tuple(10, 2, 3));
 
-    static_assert(tuple(1, "2"s, "3"s) < tuple(10, "2"s, "3"s));
-    static_assert(tuple(1, 2, 3, "4"s, 5) < tuple(1, 2, 30, "4"s, 5));
+    static_assert(tuple(1, "2"sv, "3"sv) < tuple(10, "2"sv, "3"sv));
+    static_assert(tuple(1, 2, 3, "4"sv, 5) < tuple(1, 2, 30, "4"sv, 5));
   }
 
   // swap
